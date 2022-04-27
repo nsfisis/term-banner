@@ -2,9 +2,9 @@ package main
 
 import (
 	"embed"
+	"flag"
 	"image/png"
 	"log"
-	"os"
 
 	"github.com/gdamore/tcell/v2"
 	"golang.org/x/text/encoding"
@@ -204,7 +204,7 @@ func calcSquareSizeAndOffset(r *Renderer, banner Banner) (int, int, []int, int) 
 	squareW := scrW / gridWidthMax
 	squareH := scrH / gridHeight
 	if squareW > squareH*8 {
-		squareW = squareH*8
+		squareW = squareH * 8
 	}
 	if squareH > squareW {
 		squareH = squareW
@@ -348,14 +348,25 @@ func prepareFont(fileHW, fileFW string) (*Font, error) {
 }
 
 func main() {
-	if len(os.Args) <= 1 {
+	var fontType = flag.String("f", "mincho", "Font (mincho or gothic)")
+	flag.Parse()
+	var fontFileHW string
+	var fontFileFW string
+	if *fontType == "mincho" {
+		fontFileHW = "assets/misaki_gothic_2nd_4x8.png"
+		fontFileFW = "assets/misaki_mincho.png"
+	} else if *fontType == "gothic" {
+		fontFileHW = "assets/misaki_gothic_2nd_4x8.png"
+		fontFileFW = "assets/misaki_gothic_2nd.png"
+	} else {
+		log.Fatalf("Unknown font: %s", *fontType)
+	}
+
+	if flag.NArg() == 0 {
 		return
 	}
 
-	font, err := prepareFont(
-		"assets/misaki_gothic_2nd_4x8.png",
-		"assets/misaki_mincho.png",
-	)
+	font, err := prepareFont(fontFileHW, fontFileFW)
 	if err != nil {
 		log.Fatalf("%+v", err)
 	}
@@ -369,7 +380,7 @@ func main() {
 	}
 	defer r.Fini()
 
-	banner, err := NewBanner(os.Args[1:])
+	banner, err := NewBanner(flag.Args())
 	if err != nil {
 		log.Fatalf("%+v", err)
 	}

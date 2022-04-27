@@ -24,6 +24,12 @@ Multiple arguments are displayed in multiple lines.
 $ ./term-banner foo bar baz
 ```
 
+Switch font by `-f`:
+
+```
+$ ./term-banner -f gothic 'あいうえお'
+```
+
 
 # Requirements
 
