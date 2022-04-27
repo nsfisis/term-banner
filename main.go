@@ -30,7 +30,9 @@ const (
 	fw2FirstByteStart = 0xE0
 	fw2FirstByteEnd   = 0xEF
 	fwSecondByteStart = 0x40
-	fwSecondByteEnd   = 0x9F
+	fwSecondByteEnd   = 0xFC
+	// There is no character whose 2nd byte is 0x7F.
+	fwSecondUnmapped  = 0x7F
 )
 
 //go:embed assets/*.png
@@ -308,7 +310,10 @@ func parseGlyphsFW(filePath string) (*[31][189]GlyphFW, *[16][189]GlyphFW, error
 				}
 			}
 			c1 := dy / 2
-			c2 := dx + (fwSecondByteEnd-fwSecondByteStart)*(dy%2)
+			c2 := dx + (dy%2)*(fwSecondByteEnd-fwSecondByteStart)/2
+			if c2 >= fwSecondUnmapped-fwSecondByteStart {
+				c2 += 1
+			}
 			gs1[c1][c2] = glyph
 		}
 	}
@@ -327,7 +332,10 @@ func parseGlyphsFW(filePath string) (*[31][189]GlyphFW, *[16][189]GlyphFW, error
 				}
 			}
 			c1 := dy / 2
-			c2 := dx + (fwSecondByteEnd-fwSecondByteStart)*(dy%2)
+			c2 := dx + (dy%2)*(fwSecondByteEnd-fwSecondByteStart)/2
+			if c2 >= fwSecondUnmapped-fwSecondByteStart {
+				c2 += 1
+			}
 			gs2[c1][c2] = glyph
 		}
 	}
