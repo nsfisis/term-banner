@@ -32,7 +32,7 @@ const (
 	fwSecondByteStart = 0x40
 	fwSecondByteEnd   = 0xFC
 	// There is no character whose 2nd byte is 0x7F.
-	fwSecondUnmapped  = 0x7F
+	fwSecondUnmapped = 0x7F
 )
 
 //go:embed assets/*.png
